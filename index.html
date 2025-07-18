@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Groq Chatbot</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    #chat { border: 1px solid #ccc; padding: 20px; height: 300px; overflow-y: auto; }
+    .message { margin-bottom: 15px; }
+    .user { color: blue; }
+    .bot { color: green; }
+    input[type="text"] { width: 70%; padding: 10px; }
+    button { padding: 10px 20px; }
+  </style>
+</head>
+<body>
+
+  <h1>Groq Chatbot</h1>
+  <div id="chat"></div>
+
+  <input type="text" id="userInput" placeholder="Type your message here..." />
+  <button onclick="sendMessage()">Send</button>
+
+  <script>
+    const backendURL = "https://micah-gpt-backend-1yxlxb2pq-micahs-projects-af5a1ce9.vercel.app"; // <--- update with your backend URL
+
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const chatDiv = document.getElementById("chat");
+      const message = input.value.trim();
+      if (!message) return;
+
+      // Show user's message
+      const userMsgDiv = document.createElement("div");
+      userMsgDiv.className = "message user";
+      userMsgDiv.textContent = "You: " + message;
+      chatDiv.appendChild(userMsgDiv);
+
+      input.value = "";
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+
+      try {
+        const response = await fetch(backendURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
+        const data = await response.json();
+
+        // Show bot's reply
+        const botMsgDiv = document.createElement("div");
+        botMsgDiv.className = "message bot";
+        botMsgDiv.textContent = "Groq AI: " + data.reply;
+        chatDiv.appendChild(botMsgDiv);
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+      } catch (err) {
+        const errorMsg = document.createElement("div");
+        errorMsg.className = "message bot";
+        errorMsg.style.color = "red";
+        errorMsg.textContent = "Error communicating with chatbot.";
+        chatDiv.appendChild(errorMsg);
+      }
+    }
+  </script>
+
+</body>
+</html>
