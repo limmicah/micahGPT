@@ -83,7 +83,7 @@
       messageInput.value = "";
 
       try {
-        const response = await fetch("https://micah-gpt-backend.vercel.app/", {
+        const response = await fetch("https://micah-gpt-backend.vercel.app/api/chat.js", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: userMessage })
